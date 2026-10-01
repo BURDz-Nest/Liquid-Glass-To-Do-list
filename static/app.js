@@ -3,7 +3,7 @@ const board = document.querySelector('#project-board');
 const template = document.querySelector('#project-template');
 const status = document.querySelector('#save-status');
 const dialog = document.querySelector('#project-dialog');
-const completedLimit = 10;
+const completedLimit = 7;
 let draggingTaskId = null;
 const newId = () => crypto.randomUUID();
 
@@ -39,10 +39,7 @@ function taskItem(project, task) {
   const item = document.createElement('li');
   item.className = `task-item${task.done ? ' done' : ''}`;
   item.dataset.taskId = task.id;
-  if (!task.done) {
-    item.draggable = true;
-    item.title = 'Drag to reorder';
-  }
+
   const toggle = document.createElement('button');
   toggle.className = 'triangle';
   toggle.textContent = task.done ? '▼' : '▽';
@@ -53,20 +50,47 @@ function taskItem(project, task) {
     render();
     save();
   };
+
   const text = document.createElement('span');
   text.className = 'task-text';
   text.contentEditable = 'true';
   text.textContent = task.text;
   text.setAttribute('role', 'textbox');
   text.setAttribute('aria-label', 'Task text');
-  text.addEventListener('blur', () => { task.text = text.textContent.trim() || 'Untitled idea'; text.textContent = task.text; save(); });
-  text.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); text.blur(); } });
+  text.addEventListener('blur', () => {
+    task.text = text.textContent.trim() || 'Untitled idea';
+    text.textContent = task.text;
+    save();
+  });
+  text.addEventListener('keydown', event => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      text.blur();
+    }
+  });
+
   const remove = document.createElement('button');
   remove.className = 'delete-task';
   remove.textContent = '×';
   remove.setAttribute('aria-label', `Delete ${task.text}`);
-  remove.onclick = () => { project.tasks = project.tasks.filter(current => current.id !== task.id); render(); save(); };
-  item.append(toggle, text, remove);
+  remove.onclick = () => {
+    project.tasks = project.tasks.filter(current => current.id !== task.id);
+    render();
+    save();
+  };
+
+  if (!task.done) {
+    const handle = document.createElement('button');
+    handle.className = 'drag-handle';
+    handle.type = 'button';
+    handle.draggable = true;
+    handle.textContent = String.fromCodePoint(0x2261);
+    handle.setAttribute('aria-label', `Drag ${task.text} to reorder`);
+    handle.title = 'Drag to reorder';
+    item.append(handle, toggle, text, remove);
+  } else {
+    item.append(toggle, text, remove);
+  }
   return item;
 }
 
@@ -77,9 +101,11 @@ function reorderActiveTasks(project, orderedIds) {
 }
 
 function setUpActiveTaskDrag(list, project) {
-  const activeItems = () => [...list.querySelectorAll('.task-item[draggable="true"]')];
+  const activeItems = () => [...list.querySelectorAll('.task-item:not(.done)')];
   list.addEventListener('dragstart', event => {
-    const item = event.target.closest('.task-item[draggable="true"]');
+    const handle = event.target.closest('.drag-handle[draggable="true"]');
+    if (!handle) return;
+    const item = handle.closest('.task-item');
     if (!item) return;
     draggingTaskId = item.dataset.taskId;
     event.dataTransfer.effectAllowed = 'move';
@@ -90,7 +116,7 @@ function setUpActiveTaskDrag(list, project) {
     if (!draggingTaskId) return;
     event.preventDefault();
     const draggingItem = list.querySelector(`[data-task-id="${draggingTaskId}"]`);
-    const target = event.target.closest('.task-item[draggable="true"]');
+    const target = event.target.closest('.task-item:not(.done)');
     if (!draggingItem || !target || target === draggingItem) return;
     const { top, height } = target.getBoundingClientRect();
     list.insertBefore(draggingItem, event.clientY < top + height / 2 ? target : target.nextSibling);
@@ -109,34 +135,85 @@ function setUpActiveTaskDrag(list, project) {
   });
 }
 
+function renderActive(card, project) {
+  const list = card.querySelector('.task-list');
+  const showMore = card.querySelector('.show-more-active');
+  const active = project.tasks.filter(task => !task.done);
+  let expanded = false;
+
+  const paint = () => {
+    list.replaceChildren();
+    const visible = expanded ? active : active.slice(0, completedLimit);
+    visible.forEach(task => list.append(taskItem(project, task)));
+    showMore.hidden = active.length <= completedLimit;
+    showMore.textContent = expanded
+      ? 'Show less ideas'
+      : `Show ${active.length - completedLimit} more idea${active.length - completedLimit === 1 ? '' : 's'}`;
+  };
+
+  showMore.onclick = () => {
+    expanded = !expanded;
+    paint();
+  };
+  paint();
+  setUpActiveTaskDrag(list, project);
+}
+
 function renderCompleted(card, project) {
   const section = card.querySelector('.completed-section');
+  const title = card.querySelector('.completed-title');
   const groups = card.querySelector('.completed-groups');
-  const completed = project.tasks.filter(task => task.done).sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''));
+  const showMore = card.querySelector('.show-more');
+  const completed = project.tasks
+    .filter(task => task.done)
+    .sort((a, b) => (b.completedAt || '').localeCompare(a.completedAt || ''));
   if (!completed.length) return;
+
   section.hidden = false;
-  let expanded = false;
+  let sectionExpanded = false;
+  let listExpanded = false;
+
   const paint = () => {
     groups.replaceChildren();
-    const visible = expanded ? completed : completed.slice(0, completedLimit);
+    const visible = listExpanded ? completed : completed.slice(0, completedLimit);
     const byDate = visible.reduce((groupsByDate, task) => {
       const key = task.completedAt || 'Earlier';
       (groupsByDate[key] ||= []).push(task);
       return groupsByDate;
     }, {});
     Object.entries(byDate).forEach(([date, tasks]) => {
-      const group = document.createElement('div'); group.className = 'completed-group';
-      const heading = document.createElement('p'); heading.className = 'date-heading'; heading.textContent = date === 'Earlier' ? 'Earlier' : dateLabel(date);
-      const list = document.createElement('ul'); list.className = 'task-list completed-list';
+      const group = document.createElement('div');
+      group.className = 'completed-group';
+      const heading = document.createElement('p');
+      heading.className = 'date-heading';
+      heading.textContent = date === 'Earlier' ? 'Earlier' : dateLabel(date);
+      const list = document.createElement('ul');
+      list.className = 'task-list completed-list';
       tasks.forEach(task => list.append(taskItem(project, task)));
-      group.append(heading, list); groups.append(group);
+      group.append(heading, list);
+      groups.append(group);
     });
   };
-  const showMore = card.querySelector('.show-more');
-  showMore.hidden = completed.length <= completedLimit;
+
+  const updateVisibility = () => {
+    title.setAttribute('aria-expanded', String(sectionExpanded));
+    groups.hidden = !sectionExpanded;
+    showMore.hidden = !sectionExpanded || listExpanded || completed.length <= completedLimit;
+  };
+
+  title.onclick = () => {
+    sectionExpanded = !sectionExpanded;
+    updateVisibility();
+  };
   showMore.textContent = `Show ${completed.length - completedLimit} more completed idea${completed.length - completedLimit === 1 ? '' : 's'}`;
-  showMore.onclick = () => { expanded = true; showMore.hidden = true; paint(); };
+  showMore.onclick = () => {
+    listExpanded = true;
+    paint();
+    updateVisibility();
+  };
+
   paint();
+  updateVisibility();
 }
 
 function render() {
@@ -152,9 +229,7 @@ function render() {
     const total = project.tasks.length;
     card.querySelector('.project-progress').textContent = `${completed} of ${total} shipped`;
     card.querySelector('.progress-fill').style.width = total ? `${(completed / total) * 100}%` : '0%';
-    const activeList = card.querySelector('.task-list');
-    project.tasks.filter(task => !task.done).forEach(task => activeList.append(taskItem(project, task)));
-    setUpActiveTaskDrag(activeList, project);
+    renderActive(card, project);
     renderCompleted(card, project);
     card.querySelector('.add-task-form').addEventListener('submit', event => {
       event.preventDefault();

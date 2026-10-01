@@ -2,9 +2,31 @@
   "projects": [
     {
       "id": "coach",
-      "name": "Coach",
+      "name": "Coach - Features/Bugs",
       "color": "violet",
       "tasks": [
+        {
+          "id": "coach-3",
+          "text": "Look into export / save cards — and whether users can save by click instead of scrolling",
+          "done": false,
+          "completedAt": null
+        },
+        {
+          "id": "218e3529-9414-4a96-8ba4-4bc51c2dfae8",
+          "text": "Themes - Sams, Enterprise, Activity, Ulearn, WMT, ETC",
+          "done": false,
+          "completedAt": null
+        },
+        {
+          "id": "coach-4",
+          "text": "Multiple Knowledge Checks in one element",
+          "done": false
+        },
+        {
+          "id": "coach-5",
+          "text": "2 links to the bottom instead of only back or library",
+          "done": false
+        },
         {
           "id": "coach-1",
           "text": "Help / tip modal",
@@ -15,39 +37,19 @@
           "id": "coach-2",
           "text": "Update runtime",
           "done": false
-        },
-        {
-          "id": "coach-3",
-          "text": "Look into export / save cards — and whether users can save by click instead of scrolling",
-          "done": false
-        },
-        {
-          "id": "coach-4",
-          "text": "Multiple KC in one element",
-          "done": false
-        },
-        {
-          "id": "coach-5",
-          "text": "2 links to the bottom instead of only back or library",
-          "done": false
-        },
-        {
-          "id": "218e3529-9414-4a96-8ba4-4bc51c2dfae8",
-          "text": "Themes - Sams, Enterprise, Activity, Ulearn, WMT, ETC",
-          "done": false,
-          "completedAt": null
         }
       ]
     },
     {
       "id": "quest",
-      "name": "Quest",
+      "name": "Quest - Features/Bugs",
       "color": "aqua",
       "tasks": [
         {
-          "id": "quest-1",
-          "text": "Host tool",
-          "done": false
+          "id": "096aa4b6-7105-41f0-87ab-2d22572939ae",
+          "text": "Auto align \"Next buttons\" to the right by default.",
+          "done": false,
+          "completedAt": null
         },
         {
           "id": "quest-2",
@@ -67,12 +69,30 @@
         {
           "id": "quest-5",
           "text": "Canvas size and resizing",
-          "done": false
+          "done": true,
+          "completedAt": "2026-10-01"
         },
         {
           "id": "quest-6",
           "text": "Show a “rotate phone” box on mobile",
           "done": true
+        },
+        {
+          "id": "31fe10eb-58da-4d23-92e5-fbd274128cdf",
+          "text": "Starting a new project and Saves: There seems to be an issue with naming convention and what that fillable field In the start modal does.",
+          "done": false,
+          "completedAt": null
+        },
+        {
+          "id": "9c8dd9e1-888c-4efb-bf9e-830e9ad3f878",
+          "text": "Make sure that exported projs display proper names In the tabs on the browser.",
+          "done": false,
+          "completedAt": null
+        },
+        {
+          "id": "quest-1",
+          "text": "Host tool",
+          "done": false
         }
       ]
     }

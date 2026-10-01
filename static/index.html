@@ -25,8 +25,8 @@
     <article class="project-card glass">
       <div class="project-heading"><div><input class="project-name" aria-label="Project name"><p class="project-progress"></p></div><button class="more-button" data-action="delete-project" aria-label="Delete project" title="Delete project">×</button></div>
       <div class="progress-track"><span class="progress-fill"></span></div>
-      <ul class="task-list"></ul>
-      <section class="completed-section" hidden><p class="completed-title">Shipped</p><div class="completed-groups"></div><button class="show-more" type="button" hidden>Show more completed ideas</button></section>
+      <ul class="task-list"></ul><button class="show-more-active" type="button" hidden>Show more ideas</button>
+      <section class="completed-section" hidden><button class="completed-title" type="button" aria-expanded="false">Shipped</button><div class="completed-groups"></div><button class="show-more" type="button" hidden>Show more completed ideas</button></section>
       <form class="add-task-form"><input class="new-task" aria-label="New idea" maxlength="280" placeholder="Add the next brilliant idea…"><button aria-label="Add idea" title="Add idea">＋</button></form>
     </article>
   </template>
