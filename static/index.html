@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <title>The Triangle Forge</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="aurora aurora-one"></div><div class="aurora aurora-two"></div><div class="aurora aurora-three"></div>
+  <main class="app-shell">
+    <header class="topbar glass">
+      <div><p class="eyebrow">YOUR BACKLOG</p><h1><span class="mark">△</span> The Triangle Forge</h1></div>
+      <div class="topbar-actions"><span id="save-status" class="save-status" role="status">Loading ideas…</span><button class="icon-button" id="add-project" aria-label="Add project" title="Add project">＋</button></div>
+    </header>
+    <section class="overview" aria-label="Checklist overview">
+      <div class="overview-copy"><p class="eyebrow">THE WORKBENCH</p><h2>Catch the idea.<br><em>Ship the thing.</em></h2><p>Outlined triangle: still cooking. Filled triangle: done and dusted.</p></div>
+      <div class="stat glass"><span id="open-count" class="stat-number">0</span><span>ideas in orbit</span></div>
+      <div class="stat glass"><span id="done-count" class="stat-number">0</span><span>things shipped</span></div>
+    </section>
+    <section id="project-board" class="project-board" aria-label="Project checklists"></section>
+  </main>
+  <template id="project-template">
+    <article class="project-card glass">
+      <div class="project-heading"><div><input class="project-name" aria-label="Project name"><p class="project-progress"></p></div><button class="more-button" data-action="delete-project" aria-label="Delete project" title="Delete project">×</button></div>
+      <div class="progress-track"><span class="progress-fill"></span></div>
+      <ul class="task-list"></ul>
+      <section class="completed-section" hidden><p class="completed-title">Shipped</p><div class="completed-groups"></div><button class="show-more" type="button" hidden>Show more completed ideas</button></section>
+      <form class="add-task-form"><input class="new-task" aria-label="New idea" maxlength="280" placeholder="Add the next brilliant idea…"><button aria-label="Add idea" title="Add idea">＋</button></form>
+    </article>
+  </template>
+  <dialog id="project-dialog" class="glass dialog"><form id="project-form" novalidate><button class="dialog-close" type="button" aria-label="Close">×</button><p class="eyebrow">NEW PROJECT NOTE</p><h2>What are we building?</h2><label>Project name<input id="project-name-input" maxlength="60" required placeholder="e.g. Moonshot"></label><label>Accent<select id="project-color"><option value="violet">Violet</option><option value="aqua">Aqua</option><option value="green">Green</option><option value="blue">Blue</option><option value="pink">Pink</option><option value="amber">Amber</option><option value="coral">Coral</option></select></label><div class="dialog-actions"><button class="secondary-button" type="button" data-action="cancel-project">Cancel</button><button class="primary-button" type="submit">Create project <span>△</span></button></div></form></dialog>
+  <script src="/static/app.js"></script>
+</body>
+</html>

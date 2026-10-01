@@ -1,0 +1,80 @@
+{
+  "projects": [
+    {
+      "id": "coach",
+      "name": "Coach",
+      "color": "violet",
+      "tasks": [
+        {
+          "id": "coach-1",
+          "text": "Help / tip modal",
+          "done": false,
+          "completedAt": null
+        },
+        {
+          "id": "coach-2",
+          "text": "Update runtime",
+          "done": false
+        },
+        {
+          "id": "coach-3",
+          "text": "Look into export / save cards — and whether users can save by click instead of scrolling",
+          "done": false
+        },
+        {
+          "id": "coach-4",
+          "text": "Multiple KC in one element",
+          "done": false
+        },
+        {
+          "id": "coach-5",
+          "text": "2 links to the bottom instead of only back or library",
+          "done": false
+        },
+        {
+          "id": "218e3529-9414-4a96-8ba4-4bc51c2dfae8",
+          "text": "Themes - Sams, Enterprise, Activity, Ulearn, WMT, ETC",
+          "done": false,
+          "completedAt": null
+        }
+      ]
+    },
+    {
+      "id": "quest",
+      "name": "Quest",
+      "color": "aqua",
+      "tasks": [
+        {
+          "id": "quest-1",
+          "text": "Host tool",
+          "done": false
+        },
+        {
+          "id": "quest-2",
+          "text": "Asset library",
+          "done": true
+        },
+        {
+          "id": "quest-3",
+          "text": "Hot spot info panel",
+          "done": true
+        },
+        {
+          "id": "quest-4",
+          "text": "Scene choice dialog",
+          "done": true
+        },
+        {
+          "id": "quest-5",
+          "text": "Canvas size and resizing",
+          "done": false
+        },
+        {
+          "id": "quest-6",
+          "text": "Show a “rotate phone” box on mobile",
+          "done": true
+        }
+      ]
+    }
+  ]
+}
